@@ -8,16 +8,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class StationListViewModel @Inject constructor():ViewModel() {
+class StationListViewModel @Inject constructor() : ViewModel() {
     var state by mutableStateOf(
         State(stations = listOf())
     )
+
     init {
         loadStations()
     }
 
     private fun loadStations() {
-        state = State(stations = listOf("Jarek","Weronika","Grzegorz"))
+        state = State(stations = listOf("Jarek", "Weronika", "Grzegorz"))
     }
 
     data class State(
