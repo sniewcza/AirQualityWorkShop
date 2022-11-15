@@ -1,7 +1,7 @@
 package com.example.airquality.data
 
 import com.example.airquality.entity.AQStation
-import com.example.airquality.logic.RemoteStationsRepository
+import com.example.airquality.logic.repository.RemoteStationsRepository
 import retrofit2.http.GET
 import javax.inject.Inject
 

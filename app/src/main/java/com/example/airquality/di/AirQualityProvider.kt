@@ -1,8 +1,10 @@
 package com.example.airquality.di
 
 import com.example.airquality.data.AirlyStationDataSource
+import com.example.airquality.logic.repository.InMemoryStationsRepository
+import com.example.airquality.logic.repository.LocalStationsRepository
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.airquality.logic.RemoteStationsRepository
+import com.example.airquality.logic.repository.RemoteStationsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +23,12 @@ object AirQualityProvider {
     @Singleton
     fun provideRemoteStationsRepository(airlyService: AirlyStationDataSource.AirlyService): RemoteStationsRepository {
         return AirlyStationDataSource(airlyService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocalStationsRepository(): LocalStationsRepository {
+        return InMemoryStationsRepository()
     }
 
     @Provides
