@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class StationListViewModel @Inject constructor(private val getStationUseCase: GetStationsUseCase) :
+class StationListViewModel @Inject constructor(private val getStationsUseCase: GetStationsUseCase) :
     ViewModel() {
     var state by mutableStateOf(
         State(stations = listOf())
@@ -21,12 +21,19 @@ class StationListViewModel @Inject constructor(private val getStationUseCase: Ge
         viewModelScope.launch { loadStations() }
     }
 
-    private suspend fun loadStations() {
-        val stations = getStationUseCase.execute()
-        state = State(stations = stations.map { aqStation -> aqStation.name })
+    fun onPullToRefresh() {
+        loadStations()
+    }
+
+    private fun loadStations() {
+        viewModelScope.launch {
+            val stations = getStationsUseCase.execute()
+            state = State(stations.map { aqStation -> aqStation.name }, isRefreshing = false)
+        }
     }
 
     data class State(
-        val stations: List<String> = listOf()
+        val stations: List<String> = listOf(),
+        val isRefreshing: Boolean = false
     )
 }
