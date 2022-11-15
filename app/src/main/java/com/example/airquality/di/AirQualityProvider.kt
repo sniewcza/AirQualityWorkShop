@@ -1,13 +1,17 @@
 package com.example.airquality.di
 
+import android.content.Context
+import androidx.room.Room
 import com.example.airquality.data.AirlyStationDataSource
-import com.example.airquality.logic.repository.InMemoryStationsRepository
+import com.example.airquality.data.local.db.AppDatabase
+import com.example.airquality.data.local.db.DatabaseStationsRepository
 import com.example.airquality.logic.repository.LocalStationsRepository
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.airquality.logic.repository.RemoteStationsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -26,9 +30,10 @@ object AirQualityProvider {
     }
 
     @Provides
-    @Singleton
-    fun provideLocalStationsRepository(): LocalStationsRepository {
-        return InMemoryStationsRepository()
+    @Singleton()
+    fun provideLocalStationsRepository(@ApplicationContext context: Context): LocalStationsRepository {
+        val dataBase = Room.databaseBuilder(context, AppDatabase::class.java, "AirQualityDb").build()
+        return DatabaseStationsRepository(dataBase)
     }
 
     @Provides
