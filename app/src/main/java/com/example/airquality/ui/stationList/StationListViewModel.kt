@@ -14,7 +14,7 @@ import javax.inject.Inject
 class StationListViewModel @Inject constructor(private val getStationsUseCase: GetStationsUseCase) :
     ViewModel() {
     var state by mutableStateOf(
-        State(stations = listOf())
+        State(stations = listOf(), isRefreshing = true)
     )
 
     init {
@@ -22,18 +22,35 @@ class StationListViewModel @Inject constructor(private val getStationsUseCase: G
     }
 
     fun onPullToRefresh() {
+        state = state.copy(isRefreshing = true)
         loadStations()
     }
 
     private fun loadStations() {
         viewModelScope.launch {
             val stations = getStationsUseCase.execute()
-            state = State(stations.map { aqStation -> aqStation.name }, isRefreshing = false)
+            state = State(
+                stations.map { aqStation ->
+                    StationViewData(
+                        aqStation.name,
+                        aqStation.city,
+                        aqStation.sponsorImage ?: "",
+                        aqStation.sponsor
+                    )
+                }, isRefreshing = false
+            )
         }
     }
 
     data class State(
-        val stations: List<String> = listOf(),
+        val stations: List<StationViewData> = listOf(),
         val isRefreshing: Boolean = false
+    )
+
+    data class StationViewData(
+        val title: String,
+        val subtitle: String,
+        val imageUrl: String,
+        val label: String
     )
 }
